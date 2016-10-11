@@ -49,10 +49,10 @@ public class CameraWrapper {
         return mNativeCamera.getNativeCamera();
     }
 
-    public void openCamera() throws OpenCameraException {
+    public void openCamera(boolean isFront) throws OpenCameraException {
         try {
-            mNativeCamera.openNativeCamera();
-        } catch (final RuntimeException e) {
+            mNativeCamera.openNativeCamera(isFront);
+        } catch (final Exception e) {
             e.printStackTrace();
             throw new OpenCameraException(OpenType.INUSE);
         }

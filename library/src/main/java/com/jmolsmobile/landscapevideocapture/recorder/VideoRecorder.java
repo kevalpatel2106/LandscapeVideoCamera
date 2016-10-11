@@ -36,31 +36,48 @@ import java.io.IOException;
 
 public class VideoRecorder implements OnInfoListener, CapturePreviewInterface {
 
-    private       CameraWrapper  mCameraWrapper;
-    private final Surface        mPreviewSurface;
-    private       CapturePreview mVideoCapturePreview;
+    private CameraWrapper mCameraWrapper;
+    private final Surface mPreviewSurface;
+    private CapturePreview mVideoCapturePreview;
 
     private final CaptureConfiguration mCaptureConfiguration;
-    private final VideoFile            mVideoFile;
+    private final VideoFile mVideoFile;
 
     private MediaRecorder mRecorder;
     private boolean mRecording = false;
+    private boolean isFrontCameraEnabled;
+    private SurfaceHolder mPreviewHolder;
     private final VideoRecorderInterface mRecorderInterface;
 
-    public VideoRecorder(VideoRecorderInterface recorderInterface, CaptureConfiguration captureConfiguration, VideoFile videoFile,
-                         CameraWrapper cameraWrapper, SurfaceHolder previewHolder) {
+    public VideoRecorder(VideoRecorderInterface recorderInterface,
+                         CaptureConfiguration captureConfiguration,
+                         VideoFile videoFile,
+                         CameraWrapper cameraWrapper,
+                         SurfaceHolder previewHolder) {
         mCaptureConfiguration = captureConfiguration;
         mRecorderInterface = recorderInterface;
         mVideoFile = videoFile;
         mCameraWrapper = cameraWrapper;
+        mPreviewHolder = previewHolder;
         mPreviewSurface = previewHolder.getSurface();
 
-        initializeCameraAndPreview(previewHolder);
+        initializeCameraAndPreview(previewHolder, isFrontCameraEnabled);
     }
 
-    protected void initializeCameraAndPreview(SurfaceHolder previewHolder) {
+    public void changeCamera() {
+        isFrontCameraEnabled = !isFrontCameraEnabled;
         try {
-            mCameraWrapper.openCamera();
+            mCameraWrapper.stopPreview();
+            mCameraWrapper.releaseCamera();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        initializeCameraAndPreview(mPreviewHolder, isFrontCameraEnabled);
+    }
+
+    protected void initializeCameraAndPreview(SurfaceHolder previewHolder, boolean isFront) {
+        try {
+            mCameraWrapper.openCamera(isFront);
         } catch (final OpenCameraException e) {
             e.printStackTrace();
             mRecorderInterface.onRecordingFailed(e.getMessage());

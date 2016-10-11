@@ -128,6 +128,11 @@ public class VideoCaptureActivity extends Activity implements RecordingButtonInt
     }
 
     @Override
+    public void onCameraChange() {
+        mVideoRecorder.changeCamera();
+    }
+
+    @Override
     public void onRecordingStopped(String message) {
         if (message != null) {
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
