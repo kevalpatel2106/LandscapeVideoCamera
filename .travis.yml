@@ -10,11 +10,12 @@ notifications:
 
 android:
   components:
+    - tools # to get the new `repository-11.xml`, see https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943)
+    - platform-tools
     - build-tools-24.0.2
+    - android-22
     - android-23
     - extra-android-m2repository
-    
-    - android-22
     - sys-img-armeabi-v7a-android-22
 
 before_script:
